@@ -1,34 +1,45 @@
 import sys
-from collections import deque
 
-MAX_N = 100000
+sys.setrecursionlimit(10**6)
 
-result = [0 for _ in range(MAX_N+1)]
-result[1] = 1
+N = 0
+isVisited = []
+graph = []
+parent = []
 
-def find(i):
-    num = i
-    while (num != 1) and (num != 0):
-        num = result[num]
-    return num
+
+# 행렬로 구현
+weight = [[0] * (N+1) for _ in range(N+1)]
+isVisited = [False for _ in range(N+1)]
+
+
+def dfs(vertex):
+    isVisited[vertex] = True
+
+    # w -> weight에서 v행
+    for n in graph[vertex]:
+        if not isVisited[n]:
+            parent[n] = vertex
+            dfs(n)
+    return
+
+#############################################################
 
 N = int(input())
 
+graph = [[] for _ in range(N+1)]
+isVisited = [False for _ in range(N+1)]
+# isVisited = [False] * (N+1)
+parent = [0 for _ in range(N+1)]
+
 for _ in range(N-1):
-    n, m = map(int, sys.stdin.readline().split(' '))
+    m, n = map(int, input().split())
+    graph[m].append(n)
+    graph[n].append(m)
 
-    if find(n) == 1:
-        result[result[m]] = m
-        result[m] = n
-    elif find(m) == 1:
-        result[n] = m
-    else:
-         result[m] = n
+dfs(1)
 
+for p in parent[2:]:
+    print(p)
 
 
-
-for i in range(2, N+1):
-    print(result[i])
-
-print(result[2:N+1])
